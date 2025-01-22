@@ -1,202 +1,202 @@
-import React, { useState, useEffect } from "react";
-import { FaBars, FaHome, FaEllipsisH, FaSearch, FaEdit, FaTrashAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import moment from "moment";
+// import React, { useState, useEffect } from "react";
+// import { FaBars, FaHome, FaEllipsisH, FaSearch, FaEdit, FaTrashAlt } from "react-icons/fa";
+// import { Link } from "react-router-dom";
+// import moment from "moment";
 
-const History = ({
-  isSidebarCollapsed,
-  toggleSidebar,
-  historyItems,
-  onHistoryItemClick,
-  onDeleteItem,
-  onRenameItem,
-}) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showMenu, setShowMenu] = useState(null);
-  const [groupedItems, setGroupedItems] = useState({});
+// const History = ({
+//   isSidebarCollapsed,
+//   toggleSidebar,
+//   historyItems,
+//   onHistoryItemClick,
+//   onDeleteItem,
+//   onRenameItem,
+// }) => {
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [showMenu, setShowMenu] = useState(null);
+//   const [groupedItems, setGroupedItems] = useState({});
 
-  // Group history items based on time
-  const groupHistoryItems = (items) => {
-    const groups = {
-      Today: [],
-      Yesterday: [],
-      "Previous 7 Days": [],
-      Older: [],
-    };
+//   // Group history items based on time
+//   const groupHistoryItems = (items) => {
+//     const groups = {
+//       Today: [],
+//       Yesterday: [],
+//       "Previous 7 Days": [],
+//       Older: [],
+//     };
 
-    const now = moment(); // Current time
+//     const now = moment(); // Current time
 
-    items.forEach((item) => {
-      // Parse date with the format "DD/MM/YYYY"
-      const itemDate = moment(item.date, "DD/MM/YYYY", true); // 'true' enables strict parsing
+//     items.forEach((item) => {
+//       // Parse date with the format "DD/MM/YYYY"
+//       const itemDate = moment(item.date, "DD/MM/YYYY", true); // 'true' enables strict parsing
 
-      if (!itemDate.isValid()) {
-        console.error(`Invalid date format: ${item.date}`);
-        return; // Skip invalid dates
-      }
+//       if (!itemDate.isValid()) {
+//         console.error(`Invalid date format: ${item.date}`);
+//         return; // Skip invalid dates
+//       }
 
-      const isToday = now.isSame(itemDate, "day");
-      const isYesterday = now.diff(itemDate, "days") === 1;
-      const within7Days = now.diff(itemDate, "days") <= 7;
+//       const isToday = now.isSame(itemDate, "day");
+//       const isYesterday = now.diff(itemDate, "days") === 1;
+//       const within7Days = now.diff(itemDate, "days") <= 7;
 
-      if (isToday) {
-        groups.Today.push(item);
-      } else if (isYesterday) {
-        groups.Yesterday.push(item);
-      } else if (within7Days) {
-        groups["Previous 7 Days"].push(item);
-      } else {
-        groups.Older.push(item);
-      }
-    });
+//       if (isToday) {
+//         groups.Today.push(item);
+//       } else if (isYesterday) {
+//         groups.Yesterday.push(item);
+//       } else if (within7Days) {
+//         groups["Previous 7 Days"].push(item);
+//       } else {
+//         groups.Older.push(item);
+//       }
+//     });
 
-    return groups;
-  };
+//     return groups;
+//   };
 
-  // Dynamically update grouped history
-  useEffect(() => {
-    // Initial grouping
-    setGroupedItems(groupHistoryItems(historyItems));
+//   // Dynamically update grouped history
+//   useEffect(() => {
+//     // Initial grouping
+//     setGroupedItems(groupHistoryItems(historyItems));
 
-    // Re-group every minute to ensure accuracy
-    const interval = setInterval(() => {
-      setGroupedItems(groupHistoryItems(historyItems));
-    }, 60000); // 1-minute interval
+//     // Re-group every minute to ensure accuracy
+//     const interval = setInterval(() => {
+//       setGroupedItems(groupHistoryItems(historyItems));
+//     }, 60000); // 1-minute interval
 
-    // Clear interval on component unmount
-    return () => clearInterval(interval);
-  }, [historyItems]);
+//     // Clear interval on component unmount
+//     return () => clearInterval(interval);
+//   }, [historyItems]);
 
-  const handleMenuClick = (index) => {
-    setShowMenu((prev) => (prev === index ? null : index));
-  };
+//   const handleMenuClick = (index) => {
+//     setShowMenu((prev) => (prev === index ? null : index));
+//   };
 
-  return (
-    <div className={`history-panel ${isSidebarCollapsed ? "collapsed" : ""}`}>
-      <div className="history-header">
-        <button className="toggle-btn" onClick={toggleSidebar}>
-          <FaBars />
-        </button>
-        {!isSidebarCollapsed && (
-          <>
-            <Link to="/" className="home-icon">
-              <FaHome />
-            </Link>
-            <div className="search-container">
-              <FaSearch className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search history"
-                className="search-input"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </>
-        )}
-      </div>
+//   return (
+//     <div className={`history-panel ${isSidebarCollapsed ? "collapsed" : ""}`}>
+//       <div className="history-header">
+//         <button className="toggle-btn" onClick={toggleSidebar}>
+//           <FaBars />
+//         </button>
+//         {!isSidebarCollapsed && (
+//           <>
+//             <Link to="/" className="home-icon">
+//               <FaHome />
+//             </Link>
+//             <div className="search-container">
+//               <FaSearch className="search-icon" />
+//               <input
+//                 type="text"
+//                 placeholder="Search history"
+//                 className="search-input"
+//                 value={searchTerm}
+//                 onChange={(e) => setSearchTerm(e.target.value)}
+//               />
+//             </div>
+//           </>
+//         )}
+//       </div>
 
-      {!isSidebarCollapsed && (
-        <>
-          {/* Static Links Section */}
-          <hr className="history-divider" />
+//       {!isSidebarCollapsed && (
+//         <>
+//           {/* Static Links Section */}
+//           <hr className="history-divider" />
 
-          <div className="static-links">
-            <a
-              href="https://www.bath.ac.uk/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="history-item static-item"
-              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-            >
-              <img
-                src="/face-logo-white.png"
-                alt="UoB Logo"
-                style={{ width: "30px", height: "30px" }}
-              />
-              Official UoB
-            </a>
-            <a
-              href="https://www.bath.ac.uk/corporate-information/job-evaluation/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="history-item static-item"
-              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-            >
-              <img
-                src="/face-logo-white.png"
-                alt="HERA Logo"
-                style={{ width: "30px", height: "30px" }}
-              />
-              HERA Job Evaluation
-            </a>
-          </div>
+//           <div className="static-links">
+//             <a
+//               href="https://www.bath.ac.uk/"
+//               target="_blank"
+//               rel="noopener noreferrer"
+//               className="history-item static-item"
+//               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+//             >
+//               <img
+//                 src="/face-logo-white.png"
+//                 alt="UoB Logo"
+//                 style={{ width: "30px", height: "30px" }}
+//               />
+//               Official UoB
+//             </a>
+//             <a
+//               href="https://www.bath.ac.uk/corporate-information/job-evaluation/"
+//               target="_blank"
+//               rel="noopener noreferrer"
+//               className="history-item static-item"
+//               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+//             >
+//               <img
+//                 src="/face-logo-white.png"
+//                 alt="HERA Logo"
+//                 style={{ width: "30px", height: "30px" }}
+//               />
+//               HERA Job Evaluation
+//             </a>
+//           </div>
 
-          <hr className="history-divider" />
+//           <hr className="history-divider" />
 
-          {/* Dynamic History Section */}
-          <div className="history-section">
-            {Object.keys(groupedItems).map((group) =>
-              groupedItems[group].length > 0 ? (
-                <div key={group}>
-                  <h4 className="history-subtitle">{group}</h4>
-                  {groupedItems[group].map((item, index) => (
-                    <div key={index} className="history-item-container">
-                      <div
-                        className="history-item"
-                        onClick={() => onHistoryItemClick(item)}
-                      >
-                        <p>{item.description}</p>
-                      </div>
-                      <div className="menu-container">
-                        <FaEllipsisH
-                          className="menu-icon"
-                          onClick={() => handleMenuClick(index)}
-                        />
-                        {showMenu === index && (
-                          <div className="dropdown-menu">
-                            <div
-                              className="dropdown-item"
-                              onClick={() => {
-                                const newName = prompt(
-                                  "Enter a new name:",
-                                  item.description
-                                );
-                                if (newName) onRenameItem(index, newName);
-                                setShowMenu(null);
-                              }}
-                            >
-                              <FaEdit className="dropdown-icon" />
-                              Rename
-                            </div>
-                            <div
-                              className="dropdown-item"
-                              onClick={() => {
-                                onDeleteItem(index);
-                                setShowMenu(null);
-                              }}
-                            >
-                              <FaTrashAlt className="dropdown-icon delete-icon" />
-                              Delete
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : null
-            )}
+//           {/* Dynamic History Section */}
+//           <div className="history-section">
+//             {Object.keys(groupedItems).map((group) =>
+//               groupedItems[group].length > 0 ? (
+//                 <div key={group}>
+//                   <h4 className="history-subtitle">{group}</h4>
+//                   {groupedItems[group].map((item, index) => (
+//                     <div key={index} className="history-item-container">
+//                       <div
+//                         className="history-item"
+//                         onClick={() => onHistoryItemClick(item)}
+//                       >
+//                         <p>{item.description}</p>
+//                       </div>
+//                       <div className="menu-container">
+//                         <FaEllipsisH
+//                           className="menu-icon"
+//                           onClick={() => handleMenuClick(index)}
+//                         />
+//                         {showMenu === index && (
+//                           <div className="dropdown-menu">
+//                             <div
+//                               className="dropdown-item"
+//                               onClick={() => {
+//                                 const newName = prompt(
+//                                   "Enter a new name:",
+//                                   item.description
+//                                 );
+//                                 if (newName) onRenameItem(index, newName);
+//                                 setShowMenu(null);
+//                               }}
+//                             >
+//                               <FaEdit className="dropdown-icon" />
+//                               Rename
+//                             </div>
+//                             <div
+//                               className="dropdown-item"
+//                               onClick={() => {
+//                                 onDeleteItem(index);
+//                                 setShowMenu(null);
+//                               }}
+//                             >
+//                               <FaTrashAlt className="dropdown-icon delete-icon" />
+//                               Delete
+//                             </div>
+//                           </div>
+//                         )}
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+//               ) : null
+//             )}
 
-            {/* No History Placeholder */}
-            {Object.keys(groupedItems).every(
-              (group) => groupedItems[group].length === 0
-            ) && <p className="no-history">No history is available</p>}
-          </div>
-        </>
-      )}
-    </div>
-  );
-};
+//             {/* No History Placeholder */}
+//             {Object.keys(groupedItems).every(
+//               (group) => groupedItems[group].length === 0
+//             ) && <p className="no-history">No history is available</p>}
+//           </div>
+//         </>
+//       )}
+//     </div>
+//   );
+// };
 
-export default History;
+// export default History;

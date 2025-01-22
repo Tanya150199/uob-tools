@@ -26,7 +26,7 @@ const JobEvaluationTool = ({ addToHistory, selectedHistory }) => {
     setLoading(true); // Start loading
 
     try {
-      const response = await axios.post("https://df99-92-234-51-164.ngrok-free.app/evaluate", {
+      const response = await axios.post("https://8ba3-92-234-51-164.ngrok-free.app/evaluate", {
         job_description: jobDescription,
       });
 
