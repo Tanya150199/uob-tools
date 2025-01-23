@@ -71,6 +71,13 @@ const History = ({
     setShowMenu((prev) => (prev === index ? null : index));
   };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => setShowMenu(null);
+    window.addEventListener("click", handleClickOutside);
+    return () => window.removeEventListener("click", handleClickOutside);
+  }, []);
+
   return (
     <div className={`history-panel ${isSidebarCollapsed ? "collapsed" : ""}`}>
       <div className="history-header">
@@ -141,43 +148,92 @@ const History = ({
                 <div key={group}>
                   <h4 className="history-subtitle">{group}</h4>
                   {groupedItems[group].map((item, index) => (
-                    <div key={index} className="history-item-container">
+                    <div
+                      key={index}
+                      className="history-item-container"
+                      style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}
+                    >
                       <div
                         className="history-item"
-                        onClick={() => onHistoryItemClick(item)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering outside click
+                          onHistoryItemClick(item);
+                        }}
+                        style={{
+                          maxHeight: "4rem",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "70%", // Shorten text width
+                          padding: "0.5rem",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                        }}
                       >
-                        <p>{item.description}</p>
+                        <p style={{ fontSize: "1rem", fontWeight: "400", margin: 0, marginLef: "2px" }}>
+                          {item.description.length > 100
+                            ? `${item.description.slice(0, 100)}...`
+                            : item.description}
+                        </p>
                       </div>
-                      <div className="menu-container">
+                      <div
+                        className="menu-container"
+                        style={{ position: "relative", width: "2rem", textAlign: "center" }}
+                      >
                         <FaEllipsisH
                           className="menu-icon"
-                          onClick={() => handleMenuClick(index)}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering outside click
+                            handleMenuClick(index);
+                          }}
                         />
                         {showMenu === index && (
-                          <div className="dropdown-menu">
+                          <div
+                            className="dropdown-menu"
+                            style={{
+                              position: "absolute",
+                              top: "2rem",
+                              right: "0",
+                              backgroundColor: "#fff",
+                              boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
+                              padding: "10px",
+                              borderRadius: "8px",
+                              zIndex: 10,
+                              minWidth: "120px",
+                            }}
+                          >
                             <div
                               className="dropdown-item"
-                              onClick={() => {
-                                const newName = prompt(
-                                  "Enter a new name:",
-                                  item.description
-                                );
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent closing dropdown
+                                const newName = prompt("Enter a new name:", item.description);
                                 if (newName) onRenameItem(index, newName);
                                 setShowMenu(null);
                               }}
+                              style={{
+                                padding: "5px",
+                                cursor: "pointer",
+                                fontSize: "0.9rem",
+                                color: "#333",
+                              }}
                             >
-                              <FaEdit className="dropdown-icon" />
-                              Rename
+                              <FaEdit className="dropdown-icon" /> Rename
                             </div>
                             <div
                               className="dropdown-item"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent closing dropdown
                                 onDeleteItem(index);
                                 setShowMenu(null);
                               }}
+                              style={{
+                                padding: "5px",
+                                cursor: "pointer",
+                                fontSize: "0.9rem",
+                                color: "red",
+                              }}
                             >
-                              <FaTrashAlt className="dropdown-icon delete-icon" />
-                              Delete
+                              <FaTrashAlt className="dropdown-icon delete-icon" /> Delete
                             </div>
                           </div>
                         )}
